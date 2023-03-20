@@ -1,0 +1,5 @@
+HOST = 0.0.0.0
+SERVER_URL = http://localhost:443
+SERVER_NETWORK_URL = http://server2:443/
+PROXY_NETWORK_URL = http://proxy:80/
+PROXY_URL = http://localhost:80

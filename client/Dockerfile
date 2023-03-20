@@ -5,20 +5,24 @@ FROM ubuntu:20.04
 # например для установки таймзоны для пакета tzdata, т.к. он просит ввести её с консоли
 ENV DEBIAN_FRONTEND=noninteractive
 
-# установка pip
-RUN apt-get update && apt-get install -y python3 python3-pip
+# установка пакетов системы
+RUN apt-get update  &&  \
+    apt-get install -y python3 python3-pip
 
-# установка Flask и зависимостей
-RUN pip3 install Flask
+# установка Flask и зависимостей для работы с MySQL
+COPY requirements.txt /tmp/
+RUN pip3 install -r /tmp/requirements.txt
 
-# установка и настройка WordPress
-RUN apt-get install -y wordpress
-
-# копирование конфигурационных файлов
 COPY entrypoint.sh /
 
-# открытие порта 80
-EXPOSE 80
+# копирование приложения Flask
+COPY app app/
+
+# открытие порта 8080
+EXPOSE 8080
+
+# делаем entrypoint.sh исполняемым
+RUN chmod +x /entrypoint.sh
 
 # запуск скрипта entrypoint.sh при запуске контейнера
 ENTRYPOINT ["/entrypoint.sh"]

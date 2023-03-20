@@ -12,10 +12,11 @@ RUN apt-get update  &&  \
 # установка и настройка MySQL
 RUN apt-get install -y mysql-server mysql-client && \
     service mysql start && \
-    mysql -e "CREATE DATABASE names;" && \
+    mysql -e "CREATE DATABASE testdb;" && \
     mysql -e "CREATE USER 'admin'@'localhost' IDENTIFIED BY 'P@ssw0rd';" && \
-    mysql -e "GRANT ALL PRIVILEGES ON names.* TO 'admin'@'localhost';" && \
+    mysql -e "GRANT ALL PRIVILEGES ON testdb.* TO 'admin'@'localhost';" && \
     mysql -e "FLUSH PRIVILEGES;" && \
+    mysql -e "USE testdb; CREATE TABLE users (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255), last_name VARCHAR(255), PRIMARY KEY (id));" && \
     service mysql stop
 
 # установка Flask и зависимостей для работы с MySQL
@@ -25,11 +26,10 @@ RUN pip3 install -r /tmp/requirements.txt
 COPY entrypoint.sh /
 
 # копирование приложения Flask
-COPY app/main.py /app/
-COPY templates/index.html /app/templates/
+COPY app app/
 
-# открытие порта 80
-EXPOSE 80 443
+# открытие порта 443
+EXPOSE 443
 
 # делаем entrypoint.sh исполняемым
 RUN chmod +x /entrypoint.sh
